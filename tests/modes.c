@@ -52,10 +52,11 @@ static const char* format_mode(const GLFWvidmode* mode)
     static char buffer[512];
 
     sprintf(buffer,
-            "%i x %i x %i (%i %i %i)",
+            "%i x %i x %i (%i %i %i) %i Hz",
             mode->width, mode->height,
             mode->redBits + mode->greenBits + mode->blueBits,
-            mode->redBits, mode->greenBits, mode->blueBits);
+            mode->redBits, mode->greenBits, mode->blueBits,
+            mode->refreshRate);
 
     buffer[sizeof(buffer) - 1] = '\0';
     return buffer;
@@ -66,14 +67,14 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void window_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    printf("Window resized to %ix%i\n", width, height);
+    printf("Framebuffer resized to %ix%i\n", width, height);
 
     glViewport(0, 0, width, height);
 }
 
-static void key_callback(GLFWwindow* window, int key, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -103,7 +104,7 @@ static void list_modes(GLFWmonitor* monitor)
     {
         printf("%3u: %s", (unsigned int) i, format_mode(modes + i));
 
-        if (memcmp(&mode, modes + i, sizeof(GLFWvidmode)) == 0)
+        if (memcmp(mode, modes + i, sizeof(GLFWvidmode)) == 0)
             printf(" (current mode)");
 
         putchar('\n');
@@ -142,7 +143,7 @@ static void test_modes(GLFWmonitor* monitor)
             continue;
         }
 
-        glfwSetWindowSizeCallback(window, window_size_callback);
+        glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwSetKeyCallback(window, key_callback);
 
         glfwMakeContextCurrent(window);

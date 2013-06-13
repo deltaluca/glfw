@@ -44,7 +44,7 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void key_callback(GLFWwindow* window, int key, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (action == GLFW_PRESS && key == GLFW_KEY_ESCAPE)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -94,7 +94,7 @@ static GLuint create_texture(void)
 static void draw_quad(GLuint texture)
 {
     int width, height;
-    glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
+    glfwGetFramebufferSize(glfwGetCurrentContext(), &width, &height);
 
     glViewport(0, 0, width, height);
 

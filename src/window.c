@@ -77,7 +77,7 @@ void _glfwInputWindowFocus(_GLFWwindow* window, GLboolean focused)
             for (i = 0;  i <= GLFW_KEY_LAST;  i++)
             {
                 if (window->key[i] == GLFW_PRESS)
-                    _glfwInputKey(window, i, GLFW_RELEASE, 0);
+                    _glfwInputKey(window, i, 0, GLFW_RELEASE, 0);
             }
 
             // Release all pressed mouse buttons
@@ -111,6 +111,12 @@ void _glfwInputWindowIconify(_GLFWwindow* window, int iconified)
 
     if (window->callbacks.iconify)
         window->callbacks.iconify((GLFWwindow*) window, iconified);
+}
+
+void _glfwInputFramebufferSize(_GLFWwindow* window, int width, int height)
+{
+    if (window->callbacks.fbsize)
+        window->callbacks.fbsize((GLFWwindow*) window, width, height);
 }
 
 void _glfwInputWindowVisibility(_GLFWwindow* window, int visible)
@@ -201,11 +207,13 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height,
         wndconfig.resizable = GL_TRUE;
         wndconfig.visible   = GL_TRUE;
 
-        window->videoMode.width     = width;
-        window->videoMode.height    = height;
-        window->videoMode.redBits   = fbconfig.redBits;
-        window->videoMode.greenBits = fbconfig.greenBits;
-        window->videoMode.blueBits  = fbconfig.blueBits;
+        // Set up desired video mode
+        window->videoMode.width       = width;
+        window->videoMode.height      = height;
+        window->videoMode.redBits     = Max(_glfw.hints.redBits, 0);
+        window->videoMode.greenBits   = Max(_glfw.hints.greenBits, 0);
+        window->videoMode.blueBits    = Max(_glfw.hints.blueBits, 0);
+        window->videoMode.refreshRate = Max(_glfw.hints.refreshRate, 0);
     }
 
     window->monitor     = wndconfig.monitor;
@@ -226,8 +234,8 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height,
 
     glfwMakeContextCurrent((GLFWwindow*) window);
 
-    // Cache the actual (as opposed to requested) context parameters
-    if (!_glfwRefreshContextParams())
+    // Retrieve the actual (as opposed to requested) context attributes
+    if (!_glfwRefreshContextAttribs())
     {
         glfwDestroyWindow((GLFWwindow*) window);
         glfwMakeContextCurrent((GLFWwindow*) previous);
@@ -321,6 +329,9 @@ GLFWAPI void glfwWindowHint(int target, int hint)
             break;
         case GLFW_STEREO:
             _glfw.hints.stereo = hint;
+            break;
+        case GLFW_REFRESH_RATE:
+            _glfw.hints.refreshRate = hint;
             break;
         case GLFW_RESIZABLE:
             _glfw.hints.resizable = hint;
@@ -473,6 +484,15 @@ GLFWAPI void glfwSetWindowSize(GLFWwindow* handle, int width, int height)
     _glfwPlatformSetWindowSize(window, width, height);
 }
 
+GLFWAPI void glfwGetFramebufferSize(GLFWwindow* handle, int* width, int* height)
+{
+    _GLFWwindow* window = (_GLFWwindow*) handle;
+
+    _GLFW_REQUIRE_INIT();
+
+    _glfwPlatformGetFramebufferSize(window, width, height);
+}
+
 GLFWAPI void glfwIconifyWindow(GLFWwindow* handle)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
@@ -521,13 +541,13 @@ GLFWAPI void glfwHideWindow(GLFWwindow* handle)
     _glfwPlatformHideWindow(window);
 }
 
-GLFWAPI int glfwGetWindowParam(GLFWwindow* handle, int param)
+GLFWAPI int glfwGetWindowAttrib(GLFWwindow* handle, int attrib)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(0);
 
-    switch (param)
+    switch (attrib)
     {
         case GLFW_FOCUSED:
             return window == _glfw.focusedWindow;
@@ -657,6 +677,19 @@ GLFWAPI GLFWwindowiconifyfun glfwSetWindowIconifyCallback(GLFWwindow* handle,
 
     previous = window->callbacks.iconify;
     window->callbacks.iconify = cbfun;
+    return previous;
+}
+
+GLFWAPI GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow* handle,
+                                                              GLFWframebuffersizefun cbfun)
+{
+    _GLFWwindow* window = (_GLFWwindow*) handle;
+    GLFWframebuffersizefun previous;
+
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+
+    previous = window->callbacks.fbsize;
+    window->callbacks.fbsize = cbfun;
     return previous;
 }
 

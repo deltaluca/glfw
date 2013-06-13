@@ -43,12 +43,12 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void window_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-static void key_callback(GLFWwindow* window, int key, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (action != GLFW_PRESS)
         return;
@@ -107,7 +107,7 @@ int main(int argc, char** argv)
     }
 
     glfwSetKeyCallback(window, key_callback);
-    glfwSetWindowSizeCallback(window, window_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);

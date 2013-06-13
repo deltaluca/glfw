@@ -167,7 +167,7 @@ glfwMakeContextCurrent(window);
 @endcode
 
 
-@section quick_window_params Checking the window close flag
+@section quick_window_close Checking the window close flag
 
 Each window has a flag indicating whether the window should be closed.  This can
 be checked with @ref glfwWindowShouldClose.  
@@ -194,17 +194,42 @@ useful if you want to interpret other kinds of input as closing the window, like
 for example pressing the escape key.
 
 
+@section quick_key_input Receiving input events
+
+Each window has a large number of callbacks that can be set to receive all the
+various kinds of events.  To receive key press and release events, a
+[key callback](@ref GLFWkeyfun) is set using @ref glfwSetKeyCallback.
+
+@code
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+}
+@endcode
+
+For event callbacks to actually be called when an event occurs, you need to
+process events as described below.
+
+
 @section quick_render Rendering with OpenGL
 
 Once you have a current OpenGL context, you can use OpenGL normally.  In this
-tutorial, a multi-colored rotating triangle will be rendered.  The window size,
-needed here by `glViewport` and `glOrtho`, is retrieved using @ref
-glfwGetWindowSize.  However, if you only need it for updating the viewport when
-the window size changes, you can set a window size callback using @ref
-glfwSetWindowSizeCallback and call `glViewport` from there.
+tutorial, a multi-colored rotating triangle will be rendered.  The framebuffer
+size, needed by this example for `glViewport` and `glOrtho`, is retrieved with
+@ref glfwGetFramebufferSize.
 
 @code
-void window_size_callback(GLFWwindow* window, int width, int height)
+int width, height;
+glfwGetFramebufferSize(window, &width, &height);
+glViewport(0, 0, width, height);
+@endcode
+
+However, you can also set a framebuffer size callback using @ref
+glfwSetFramebufferSizeCallback and call `glViewport` from there.
+
+@code
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }

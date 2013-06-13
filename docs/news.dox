@@ -71,6 +71,15 @@ GLFW now has an (experimental) EGL context creation back end, which can be
 selected through CMake options.
 
 
+@subsection news_30_hidpi High-DPI support
+
+GLFW now supports high-DPI monitors on both Windows and OS X, giving windows full
+resolution framebuffers where other UI elements are scaled up.  To achieve this,
+@ref glfwGetFramebufferSize and @ref glfwSetFramebufferSizeCallback have been
+added.  These work with pixels, while the rest of the GLFW API work with screen
+coordinates.
+
+
 @subsection news_30_error Error callback
 
 GLFW now has an error callback, which can provide your application with much
@@ -87,8 +96,8 @@ easier to integrate GLFW into C++ code.
 
 @subsection news_30_iconifyfun Window iconification callback
 
-Each window object has a callback for iconification and restoration events, which is
-set with @ref glfwSetWindowIconifyCallback.
+Each window object has a callback for iconification and restoration events,
+which is set with @ref glfwSetWindowIconifyCallback.
 
 
 @subsection news_30_wndposfun Window position callback
@@ -127,5 +136,29 @@ well as moving a window to a specific position before showing it.
 Windowed mode windows can now be created without decorations, i.e. things like
 a frame, a title bar, with the `GLFW_DECORATED` window hint.  This allows for
 the creation of things like splash screens.
+
+
+@subsection news_30_keymods Modifier key bit masks
+
+[Modifier key bit mask](@ref mods) parameters have been added to the
+[mouse button](@ref GLFWmousebuttonfun) and [key](@ref GLFWkeyfun) callbacks.
+
+
+@subsection news_30_scancode Platform-specific scancodes
+
+A scancode parameter has been added to the [key callback](@ref GLFWkeyfun). Keys
+that don't have a [key token](@ref keys) still get passed on with the key
+parameter set to `GLFW_KEY_UNKNOWN`.  These scancodes will vary between machines
+and are intended to be used for key bindings.
+
+
+@subsection news_30_jsname Joystick names
+
+The name of a joystick can now be retrieved using @ref glfwGetJoystickName.
+
+
+@subsection news_30_doxygen Doxygen documentation
+
+You are reading it.
 
 */

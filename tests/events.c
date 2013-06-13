@@ -172,6 +172,7 @@ static const char* get_key_name(int key)
         case GLFW_KEY_LEFT_SUPER:   return "LEFT SUPER";
         case GLFW_KEY_RIGHT_SUPER:  return "RIGHT SUPER";
         case GLFW_KEY_MENU:         return "MENU";
+        case GLFW_KEY_UNKNOWN:      return "UNKNOWN";
 
         default:                    return NULL;
     }
@@ -259,6 +260,15 @@ static void window_size_callback(GLFWwindow* window, int width, int height)
            glfwGetTime(),
            width,
            height);
+}
+
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    printf("%08x at %0.3f: Framebuffer size: %i %i\n",
+           counter++,
+           glfwGetTime(),
+           width,
+           height);
 
     glViewport(0, 0, width, height);
 }
@@ -330,11 +340,12 @@ static void scroll_callback(GLFWwindow* window, double x, double y)
     printf("%08x at %0.3f: Scroll: %0.3f %0.3f\n", counter++, glfwGetTime(), x, y);
 }
 
-static void key_callback(GLFWwindow* window, int key, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     const char* name = get_key_name(key);
 
-    printf("%08x at %0.3f: Key 0x%04x", counter++, glfwGetTime(), key);
+    printf("%08x at %0.3f: Key 0x%04x Scancode 0x%04x",
+           counter++, glfwGetTime(), key, scancode);
 
     if (name)
         printf(" (%s)", name);
@@ -422,6 +433,7 @@ int main(void)
 
     glfwSetWindowPosCallback(window, window_pos_callback);
     glfwSetWindowSizeCallback(window, window_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetWindowCloseCallback(window, window_close_callback);
     glfwSetWindowRefreshCallback(window, window_refresh_callback);
     glfwSetWindowFocusCallback(window, window_focus_callback);

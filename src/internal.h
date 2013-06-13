@@ -216,18 +216,19 @@ struct _GLFWwindow
 #endif
 
     struct {
-        GLFWwindowposfun     pos;
-        GLFWwindowsizefun    size;
-        GLFWwindowclosefun   close;
-        GLFWwindowrefreshfun refresh;
-        GLFWwindowfocusfun   focus;
-        GLFWwindowiconifyfun iconify;
-        GLFWmousebuttonfun   mouseButton;
-        GLFWcursorposfun     cursorPos;
-        GLFWcursorenterfun   cursorEnter;
-        GLFWscrollfun        scroll;
-        GLFWkeyfun           key;
-        GLFWcharfun          character;
+        GLFWwindowposfun        pos;
+        GLFWwindowsizefun       size;
+        GLFWwindowclosefun      close;
+        GLFWwindowrefreshfun    refresh;
+        GLFWwindowfocusfun      focus;
+        GLFWwindowiconifyfun    iconify;
+        GLFWframebuffersizefun  fbsize;
+        GLFWmousebuttonfun      mouseButton;
+        GLFWcursorposfun        cursorPos;
+        GLFWcursorenterfun      cursorEnter;
+        GLFWscrollfun           scroll;
+        GLFWkeyfun              key;
+        GLFWcharfun             character;
     } callbacks;
 
     // This is defined in the window API's platform.h
@@ -280,6 +281,7 @@ struct _GLFWlibrary
         GLboolean   decorated;
         int         samples;
         GLboolean   sRGB;
+        int         refreshRate;
         int         clientAPI;
         int         glMajor;
         int         glMinor;
@@ -416,12 +418,12 @@ int _glfwPlatformJoystickPresent(int joy);
 /*! @copydoc glfwGetJoystickAxes
  *  @ingroup platform
  */
-float* _glfwPlatformGetJoystickAxes(int joy, int* count);
+const float* _glfwPlatformGetJoystickAxes(int joy, int* count);
 
 /*! @copydoc glfwGetJoystickButtons
  *  @ingroup platform
  */
-unsigned char* _glfwPlatformGetJoystickButtons(int joy, int* count);
+const unsigned char* _glfwPlatformGetJoystickButtons(int joy, int* count);
 
 /*! @copydoc glfwGetJoystickName
  *  @ingroup platform
@@ -472,6 +474,11 @@ void _glfwPlatformGetWindowSize(_GLFWwindow* window, int* width, int* height);
  *  @ingroup platform
  */
 void _glfwPlatformSetWindowSize(_GLFWwindow* window, int width, int height);
+
+/*! @copydoc glfwGetFramebufferSize
+ *  @ingroup platform
+ */
+void _glfwPlatformGetFramebufferSize(_GLFWwindow* window, int* width, int* height);
 
 /*! @copydoc glfwIconifyWindow
  *  @ingroup platform
@@ -561,6 +568,14 @@ void _glfwInputWindowPos(_GLFWwindow* window, int xpos, int ypos);
  */
 void _glfwInputWindowSize(_GLFWwindow* window, int width, int height);
 
+/*! @brief Notifies shared code of a framebuffer resize event.
+ *  @param[in] window The window that received the event.
+ *  @param[in] width The new width, in pixels, of the framebuffer.
+ *  @param[in] height The new height, in pixels, of the framebuffer.
+ *  @ingroup event
+ */
+void _glfwInputFramebufferSize(_GLFWwindow* window, int width, int height);
+
 /*! @brief Notifies shared code of a window iconification event.
  *  @param[in] window The window that received the event.
  *  @param[in] iconified `GL_TRUE` if the window was iconified, or `GL_FALSE`
@@ -591,11 +606,12 @@ void _glfwInputWindowCloseRequest(_GLFWwindow* window);
 /*! @brief Notifies shared code of a physical key event.
  *  @param[in] window The window that received the event.
  *  @param[in] key The key that was pressed or released.
+ *  @param[in] scancode The system-specific scan code of the key.
  *  @param[in] action @ref GLFW_PRESS or @ref GLFW_RELEASE.
  *  @param[in] mods The modifiers pressed when the event was generated.
  *  @ingroup event
  */
-void _glfwInputKey(_GLFWwindow* window, int key, int action, int mods);
+void _glfwInputKey(_GLFWwindow* window, int key, int scancode, int action, int mods);
 
 /*! @brief Notifies shared code of a Unicode character input event.
  *  @param[in] window The window that received the event.
@@ -690,15 +706,15 @@ const _GLFWfbconfig* _glfwChooseFBConfig(const _GLFWfbconfig* desired,
                                          const _GLFWfbconfig* alternatives,
                                          unsigned int count);
 
-/*! @brief Checks and reads back properties from the current context.
+/*! @brief Retrieves the attributes of the current context.
  *  @return `GL_TRUE` if successful, or `GL_FALSE` if the context is unusable.
  *  @ingroup utility
  */
-GLboolean _glfwRefreshContextParams(void);
+GLboolean _glfwRefreshContextAttribs(void);
 
-/*! @brief Checks whether the desired context properties are valid.
- *  @param[in] wndconfig The context properties to check.
- *  @return `GL_TRUE` if the context properties are valid, or `GL_FALSE`
+/*! @brief Checks whether the desired context attributes are valid.
+ *  @param[in] wndconfig The context attributes to check.
+ *  @return `GL_TRUE` if the context attributes are valid, or `GL_FALSE`
  *  otherwise.
  *  @ingroup utility
  *
@@ -710,7 +726,7 @@ GLboolean _glfwIsValidContextConfig(_GLFWwndconfig* wndconfig);
 
 /*! @brief Checks whether the current context fulfils the specified hard
  *  constraints.
- *  @param[in] wndconfig The desired context properties.
+ *  @param[in] wndconfig The desired context attributes.
  *  @return `GL_TRUE` if the context fulfils the hard constraints, or `GL_FALSE`
  *  otherwise.
  *  @ingroup utility

@@ -60,7 +60,7 @@ typedef struct
 
 // Translates an X event modifier state mask
 //
-int translateState(int state)
+static int translateState(int state)
 {
     int mods = 0;
 
@@ -83,8 +83,8 @@ static int translateKey(int keycode)
     // Use the pre-filled LUT (see updateKeyCodeLUT() in x11_init.c)
     if ((keycode >= 0) && (keycode < 256))
         return _glfw.x11.keyCodeLUT[keycode];
-    else
-        return -1;
+
+    return GLFW_KEY_UNKNOWN;
 }
 
 // Translates an X Window event to Unicode
@@ -491,23 +491,6 @@ static void leaveFullscreenMode(_GLFWwindow* window)
     }
 }
 
-// Return the GLFW window corresponding to the specified X11 window
-//
-_GLFWwindow* _glfwFindWindowByHandle(Window handle)
-{
-    _GLFWwindow* window;
-
-    if (XFindContext(_glfw.x11.display,
-                     handle,
-                     _glfw.x11.context,
-                     (XPointer*) &window) != 0)
-    {
-        return NULL;
-    }
-
-    return window;
-}
-
 // Process the specified X event
 //
 static void processEvent(XEvent *event)
@@ -532,7 +515,7 @@ static void processEvent(XEvent *event)
             const int key = translateKey(event->xkey.keycode);
             const int mods = translateState(event->xkey.state);
 
-            _glfwInputKey(window, key, GLFW_PRESS, mods);
+            _glfwInputKey(window, key, event->xkey.keycode, GLFW_PRESS, mods);
 
             if (!(mods & GLFW_MOD_CONTROL) && !(mods & GLFW_MOD_ALT))
                 _glfwInputChar(window, translateChar(&event->xkey));
@@ -545,7 +528,7 @@ static void processEvent(XEvent *event)
             const int key = translateKey(event->xkey.keycode);
             const int mods = translateState(event->xkey.state);
 
-            _glfwInputKey(window, key, GLFW_RELEASE, mods);
+            _glfwInputKey(window, key, event->xkey.keycode, GLFW_RELEASE, mods);
             break;
         }
 
@@ -652,6 +635,10 @@ static void processEvent(XEvent *event)
 
         case ConfigureNotify:
         {
+            _glfwInputFramebufferSize(window,
+                                      event->xconfigure.width,
+                                      event->xconfigure.height);
+
             _glfwInputWindowSize(window,
                                  event->xconfigure.width,
                                  event->xconfigure.height);
@@ -838,6 +825,23 @@ static void processEvent(XEvent *event)
 //////                       GLFW internal API                      //////
 //////////////////////////////////////////////////////////////////////////
 
+// Return the GLFW window corresponding to the specified X11 window
+//
+_GLFWwindow* _glfwFindWindowByHandle(Window handle)
+{
+    _GLFWwindow* window;
+
+    if (XFindContext(_glfw.x11.display,
+                     handle,
+                     _glfw.x11.context,
+                     (XPointer*) &window) != 0)
+    {
+        return NULL;
+    }
+
+    return window;
+}
+
 // Retrieve a single window property of the specified type
 // Inspired by fghGetWindowProperty from freeglut
 //
@@ -888,26 +892,6 @@ int _glfwPlatformCreateWindow(_GLFWwindow* window,
     {
         _glfwPlatformShowWindow(window);
         enterFullscreenMode(window);
-    }
-
-    // Retrieve and set initial cursor position
-    {
-        Window cursorWindow, cursorRoot;
-        int windowX, windowY, rootX, rootY;
-        unsigned int mask;
-
-        XQueryPointer(_glfw.x11.display,
-                      window->x11.handle,
-                      &cursorRoot,
-                      &cursorWindow,
-                      &rootX, &rootY,
-                      &windowX, &windowY,
-                      &mask);
-
-        // TODO: Probably check for some corner cases here.
-
-        window->cursorPosX = windowX;
-        window->cursorPosY = windowY;
     }
 
     return GL_TRUE;
@@ -1039,6 +1023,11 @@ void _glfwPlatformSetWindowSize(_GLFWwindow* window, int width, int height)
         XResizeWindow(_glfw.x11.display, window->x11.handle, width, height);
 
     XFlush(_glfw.x11.display);
+}
+
+void _glfwPlatformGetFramebufferSize(_GLFWwindow* window, int* width, int* height)
+{
+    _glfwPlatformGetWindowSize(window, width, height);
 }
 
 void _glfwPlatformIconifyWindow(_GLFWwindow* window)
