@@ -40,7 +40,7 @@ static const char* titles[] =
     "Quux"
 };
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
@@ -51,7 +51,7 @@ int main(void)
     GLboolean running = GL_TRUE;
     GLFWwindow* windows[4];
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);

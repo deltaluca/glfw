@@ -38,17 +38,17 @@
 
 #include "getopt.h"
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height, void* data)
 {
     glViewport(0, 0, width, height);
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     if (action != GLFW_PRESS)
         return;
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
         }
     }
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -106,8 +106,8 @@ int main(int argc, char** argv)
         exit(EXIT_FAILURE);
     }
 
-    glfwSetKeyCallback(window, key_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, key_callback, NULL);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback, NULL);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);

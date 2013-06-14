@@ -47,7 +47,8 @@ _GLFWlibrary _glfw;
 // This is outside of _glfw so it can be initialized and usable before
 // glfwInit is called, which lets that function report errors
 //
-static GLFWerrorfun _glfwErrorCallback = NULL;
+static GLFWerrorfun _glfwErrorCallback      = NULL;
+static void*        _glfwErrorCallback_data = NULL;
 
 
 // Returns a generic string representation of the specified error
@@ -108,7 +109,7 @@ void _glfwInputError(int error, const char* format, ...)
         else
             description = getErrorString(error);
 
-        _glfwErrorCallback(error, description);
+        _glfwErrorCallback(error, description, _glfwErrorCallback_data);
     }
 }
 
@@ -133,7 +134,7 @@ GLFWAPI int glfwInit(void)
     _glfw.monitors = _glfwPlatformGetMonitors(&_glfw.monitorCount);
     if (_glfw.monitors == NULL)
     {
-        _glfwErrorCallback(GLFW_PLATFORM_ERROR, "No monitors found");
+        _glfwErrorCallback(GLFW_PLATFORM_ERROR, "No monitors found", _glfwErrorCallback_data);
         _glfwPlatformTerminate();
         return GL_FALSE;
     }
@@ -190,10 +191,11 @@ GLFWAPI const char* glfwGetVersionString(void)
     return _glfwPlatformGetVersionString();
 }
 
-GLFWAPI GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun cbfun)
+GLFWAPI GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun cbfun, void* data)
 {
-    GLFWerrorfun previous = _glfwErrorCallback;
-    _glfwErrorCallback = cbfun;
+    GLFWerrorfun previous   = _glfwErrorCallback;
+    _glfwErrorCallback      = cbfun;
+    _glfwErrorCallback_data = data;
     return previous;
 }
 

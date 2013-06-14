@@ -42,8 +42,8 @@
 /* Prototypes */
 void init( void );
 void display( void );
-void reshape( GLFWwindow* window, int w, int h );
-void key_callback( GLFWwindow* window, int key, int scancode, int action, int mods );
+void reshape( GLFWwindow* window, int w, int h, void* data );
+void key_callback( GLFWwindow* window, int key, int scancode, int action, int mods, void* data );
 void DrawBoingBall( void );
 void BounceBall( double dt );
 void DrawBoingBallBand( GLfloat long_lo, GLfloat long_hi );
@@ -225,7 +225,7 @@ void display(void)
 /*****************************************************************************
  * reshape()
  *****************************************************************************/
-void reshape( GLFWwindow* window, int w, int h )
+void reshape( GLFWwindow* window, int w, int h, void* data )
 {
    glViewport( 0, 0, (GLsizei)w, (GLsizei)h );
 
@@ -245,7 +245,7 @@ void reshape( GLFWwindow* window, int w, int h )
               0.0, -1.0, 0.0 );         /* up vector */
 }
 
-void key_callback( GLFWwindow* window, int key, int scancode, int action, int mods )
+void key_callback( GLFWwindow* window, int key, int scancode, int action, int mods, void* data )
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -589,14 +589,14 @@ int main( void )
        exit( EXIT_FAILURE );
    }
 
-   glfwSetFramebufferSizeCallback(window, reshape);
-   glfwSetKeyCallback(window, key_callback);
+   glfwSetFramebufferSizeCallback(window, reshape, NULL);
+   glfwSetKeyCallback(window, key_callback, NULL);
 
    glfwMakeContextCurrent(window);
    glfwSwapInterval( 1 );
 
    glfwGetFramebufferSize(window, &width, &height);
-   reshape(window, width, height);
+   reshape(window, width, height, NULL);
 
    glfwSetTime( 0.0 );
 

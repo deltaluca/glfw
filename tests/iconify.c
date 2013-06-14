@@ -40,12 +40,12 @@ static void usage(void)
     printf("Usage: iconify [-h] [-f]\n");
 }
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     printf("%0.2f Key %s\n",
            glfwGetTime(),
@@ -65,26 +65,26 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     }
 }
 
-static void window_size_callback(GLFWwindow* window, int width, int height)
+static void window_size_callback(GLFWwindow* window, int width, int height, void* data)
 {
     printf("%0.2f Window resized to %ix%i\n", glfwGetTime(), width, height);
 }
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height, void* data)
 {
     printf("%0.2f Framebuffer resized to %ix%i\n", glfwGetTime(), width, height);
 
     glViewport(0, 0, width, height);
 }
 
-static void window_focus_callback(GLFWwindow* window, int focused)
+static void window_focus_callback(GLFWwindow* window, int focused, void* data)
 {
     printf("%0.2f Window %s\n",
            glfwGetTime(),
            focused ? "focused" : "defocused");
 }
 
-static void window_iconify_callback(GLFWwindow* window, int iconified)
+static void window_iconify_callback(GLFWwindow* window, int iconified, void* data)
 {
     printf("%0.2f Window %s\n",
            glfwGetTime(),
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
     GLFWmonitor* monitor = NULL;
     GLFWwindow* window;
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -142,11 +142,11 @@ int main(int argc, char** argv)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
-    glfwSetKeyCallback(window, key_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetWindowSizeCallback(window, window_size_callback);
-    glfwSetWindowFocusCallback(window, window_focus_callback);
-    glfwSetWindowIconifyCallback(window, window_iconify_callback);
+    glfwSetKeyCallback(window, key_callback, NULL);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback, NULL);
+    glfwSetWindowSizeCallback(window, window_size_callback, NULL);
+    glfwSetWindowFocusCallback(window, window_focus_callback, NULL);
+    glfwSetWindowIconifyCallback(window, window_iconify_callback, NULL);
 
     printf("Window is %s and %s\n",
            glfwGetWindowAttrib(window, GLFW_ICONIFIED) ? "iconified" : "restored",

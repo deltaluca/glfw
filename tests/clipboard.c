@@ -39,12 +39,12 @@ static void usage(void)
     printf("Usage: clipboard [-h]\n");
 }
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     if (action != GLFW_PRESS)
         return;
@@ -79,7 +79,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     }
 }
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height, void* data)
 {
     glViewport(0, 0, width, height);
 }
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
         }
     }
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
     {
@@ -123,8 +123,8 @@ int main(int argc, char** argv)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
-    glfwSetKeyCallback(window, key_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, key_callback, NULL);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback, NULL);
 
     glMatrixMode(GL_PROJECTION);
     glOrtho(-1.f, 1.f, -1.f, 1.f, -1.f, 1.f);

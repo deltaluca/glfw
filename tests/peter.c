@@ -53,19 +53,19 @@ static void toggle_cursor(GLFWwindow* window)
     }
 }
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void cursor_position_callback(GLFWwindow* window, double x, double y)
+static void cursor_position_callback(GLFWwindow* window, double x, double y, void* data)
 {
     printf("Cursor moved to: %f %f (%f %f)\n", x, y, x - cursor_x, y - cursor_y);
     cursor_x = x;
     cursor_y = y;
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     switch (key)
     {
@@ -87,7 +87,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     }
 }
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height, void* data)
 {
     glViewport(0, 0, width, height);
 }
@@ -104,9 +104,9 @@ static GLFWwindow* open_window(void)
     glfwGetCursorPos(window, &cursor_x, &cursor_y);
     printf("Cursor position: %f %f\n", cursor_x, cursor_y);
 
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, cursor_position_callback);
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback, NULL);
+    glfwSetCursorPosCallback(window, cursor_position_callback, NULL);
+    glfwSetKeyCallback(window, key_callback, NULL);
 
     return window;
 }
@@ -115,7 +115,7 @@ int main(void)
 {
     GLFWwindow* window;
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);

@@ -357,7 +357,7 @@ static void drawAllViews(void)
 // Framebuffer size callback function
 //========================================================================
 
-static void framebufferSizeFun(GLFWwindow* window, int w, int h)
+static void framebufferSizeFun(GLFWwindow* window, int w, int h, void* data)
 {
     width  = w;
     height = h > 0 ? h : 1;
@@ -369,7 +369,7 @@ static void framebufferSizeFun(GLFWwindow* window, int w, int h)
 // Window refresh callback function
 //========================================================================
 
-static void windowRefreshFun(GLFWwindow* window)
+static void windowRefreshFun(GLFWwindow* window, void* data)
 {
     do_redraw = 1;
 }
@@ -379,7 +379,7 @@ static void windowRefreshFun(GLFWwindow* window)
 // Mouse position callback function
 //========================================================================
 
-static void cursorPosFun(GLFWwindow* window, double x, double y)
+static void cursorPosFun(GLFWwindow* window, double x, double y, void* data)
 {
     // Depending on which view was selected, rotate around different axes
     switch (active_view)
@@ -414,7 +414,7 @@ static void cursorPosFun(GLFWwindow* window, double x, double y)
 // Mouse button callback function
 //========================================================================
 
-static void mouseButtonFun(GLFWwindow* window, int button, int action, int mods)
+static void mouseButtonFun(GLFWwindow* window, int button, int action, int mods, void* data)
 {
     if ((button == GLFW_MOUSE_BUTTON_LEFT) && action == GLFW_PRESS)
     {
@@ -434,7 +434,7 @@ static void mouseButtonFun(GLFWwindow* window, int button, int action, int mods)
     do_redraw = 1;
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -467,18 +467,18 @@ int main(void)
     }
 
     // Set callback functions
-    glfwSetFramebufferSizeCallback(window, framebufferSizeFun);
-    glfwSetWindowRefreshCallback(window, windowRefreshFun);
-    glfwSetCursorPosCallback(window, cursorPosFun);
-    glfwSetMouseButtonCallback(window, mouseButtonFun);
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeFun, NULL);
+    glfwSetWindowRefreshCallback(window, windowRefreshFun, NULL);
+    glfwSetCursorPosCallback(window, cursorPosFun, NULL);
+    glfwSetMouseButtonCallback(window, mouseButtonFun, NULL);
+    glfwSetKeyCallback(window, key_callback, NULL);
 
     // Enable vsync
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
     glfwGetFramebufferSize(window, &width, &height);
-    framebufferSizeFun(window, width, height);
+    framebufferSizeFun(window, width, height, NULL);
 
     // Main loop
     for (;;)

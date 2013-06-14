@@ -59,7 +59,7 @@ void _glfwInputWindowFocus(_GLFWwindow* window, GLboolean focused)
             _glfw.focusedWindow = window;
 
             if (window->callbacks.focus)
-                window->callbacks.focus((GLFWwindow*) window, focused);
+                window->callbacks.focus((GLFWwindow*) window, focused, window->callbacks.focus_data);
         }
     }
     else
@@ -71,7 +71,7 @@ void _glfwInputWindowFocus(_GLFWwindow* window, GLboolean focused)
             _glfw.focusedWindow = NULL;
 
             if (window->callbacks.focus)
-                window->callbacks.focus((GLFWwindow*) window, focused);
+                window->callbacks.focus((GLFWwindow*) window, focused, window->callbacks.focus_data);
 
             // Release all pressed keyboard keys
             for (i = 0;  i <= GLFW_KEY_LAST;  i++)
@@ -93,13 +93,13 @@ void _glfwInputWindowFocus(_GLFWwindow* window, GLboolean focused)
 void _glfwInputWindowPos(_GLFWwindow* window, int x, int y)
 {
     if (window->callbacks.pos)
-        window->callbacks.pos((GLFWwindow*) window, x, y);
+        window->callbacks.pos((GLFWwindow*) window, x, y, window->callbacks.pos_data);
 }
 
 void _glfwInputWindowSize(_GLFWwindow* window, int width, int height)
 {
     if (window->callbacks.size)
-        window->callbacks.size((GLFWwindow*) window, width, height);
+        window->callbacks.size((GLFWwindow*) window, width, height, window->callbacks.size_data);
 }
 
 void _glfwInputWindowIconify(_GLFWwindow* window, int iconified)
@@ -110,13 +110,13 @@ void _glfwInputWindowIconify(_GLFWwindow* window, int iconified)
     window->iconified = iconified;
 
     if (window->callbacks.iconify)
-        window->callbacks.iconify((GLFWwindow*) window, iconified);
+        window->callbacks.iconify((GLFWwindow*) window, iconified, window->callbacks.iconify_data);
 }
 
 void _glfwInputFramebufferSize(_GLFWwindow* window, int width, int height)
 {
     if (window->callbacks.fbsize)
-        window->callbacks.fbsize((GLFWwindow*) window, width, height);
+        window->callbacks.fbsize((GLFWwindow*) window, width, height, window->callbacks.fbsize_data);
 }
 
 void _glfwInputWindowVisibility(_GLFWwindow* window, int visible)
@@ -127,7 +127,7 @@ void _glfwInputWindowVisibility(_GLFWwindow* window, int visible)
 void _glfwInputWindowDamage(_GLFWwindow* window)
 {
     if (window->callbacks.refresh)
-        window->callbacks.refresh((GLFWwindow*) window);
+        window->callbacks.refresh((GLFWwindow*) window, window->callbacks.refresh_data);
 }
 
 void _glfwInputWindowCloseRequest(_GLFWwindow* window)
@@ -135,7 +135,7 @@ void _glfwInputWindowCloseRequest(_GLFWwindow* window)
         window->closed = GL_TRUE;
 
     if (window->callbacks.close)
-        window->callbacks.close((GLFWwindow*) window);
+        window->callbacks.close((GLFWwindow*) window, window->callbacks.close_data);
 }
 
 
@@ -603,7 +603,8 @@ GLFWAPI void* glfwGetWindowUserPointer(GLFWwindow* handle)
 }
 
 GLFWAPI GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindow* handle,
-                                                  GLFWwindowposfun cbfun)
+                                                  GLFWwindowposfun cbfun,
+                                                  void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWwindowposfun previous;
@@ -612,11 +613,13 @@ GLFWAPI GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindow* handle,
 
     previous = window->callbacks.pos;
     window->callbacks.pos = cbfun;
+    window->callbacks.pos_data = data;
     return previous;
 }
 
 GLFWAPI GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindow* handle,
-                                                    GLFWwindowsizefun cbfun)
+                                                    GLFWwindowsizefun cbfun,
+                                                    void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWwindowsizefun previous;
@@ -625,11 +628,13 @@ GLFWAPI GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindow* handle,
 
     previous = window->callbacks.size;
     window->callbacks.size = cbfun;
+    window->callbacks.size_data = data;
     return previous;
 }
 
 GLFWAPI GLFWwindowclosefun glfwSetWindowCloseCallback(GLFWwindow* handle,
-                                                      GLFWwindowclosefun cbfun)
+                                                      GLFWwindowclosefun cbfun,
+                                                      void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWwindowclosefun previous;
@@ -638,11 +643,13 @@ GLFWAPI GLFWwindowclosefun glfwSetWindowCloseCallback(GLFWwindow* handle,
 
     previous = window->callbacks.close;
     window->callbacks.close = cbfun;
+    window->callbacks.close_data = data;
     return previous;
 }
 
 GLFWAPI GLFWwindowrefreshfun glfwSetWindowRefreshCallback(GLFWwindow* handle,
-                                                          GLFWwindowrefreshfun cbfun)
+                                                          GLFWwindowrefreshfun cbfun,
+                                                          void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWwindowrefreshfun previous;
@@ -651,11 +658,13 @@ GLFWAPI GLFWwindowrefreshfun glfwSetWindowRefreshCallback(GLFWwindow* handle,
 
     previous = window->callbacks.refresh;
     window->callbacks.refresh = cbfun;
+    window->callbacks.refresh_data = data;
     return previous;
 }
 
 GLFWAPI GLFWwindowfocusfun glfwSetWindowFocusCallback(GLFWwindow* handle,
-                                                      GLFWwindowfocusfun cbfun)
+                                                      GLFWwindowfocusfun cbfun,
+                                                      void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWwindowfocusfun previous;
@@ -664,11 +673,13 @@ GLFWAPI GLFWwindowfocusfun glfwSetWindowFocusCallback(GLFWwindow* handle,
 
     previous = window->callbacks.focus;
     window->callbacks.focus = cbfun;
+    window->callbacks.focus_data = data;
     return previous;
 }
 
 GLFWAPI GLFWwindowiconifyfun glfwSetWindowIconifyCallback(GLFWwindow* handle,
-                                                          GLFWwindowiconifyfun cbfun)
+                                                          GLFWwindowiconifyfun cbfun,
+                                                          void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWwindowiconifyfun previous;
@@ -677,11 +688,13 @@ GLFWAPI GLFWwindowiconifyfun glfwSetWindowIconifyCallback(GLFWwindow* handle,
 
     previous = window->callbacks.iconify;
     window->callbacks.iconify = cbfun;
+    window->callbacks.iconify_data = data;
     return previous;
 }
 
 GLFWAPI GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow* handle,
-                                                              GLFWframebuffersizefun cbfun)
+                                                              GLFWframebuffersizefun cbfun,
+                                                              void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWframebuffersizefun previous;
@@ -690,6 +703,7 @@ GLFWAPI GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow* handle
 
     previous = window->callbacks.fbsize;
     window->callbacks.fbsize = cbfun;
+    window->callbacks.fbsize_data = data;
     return previous;
 }
 

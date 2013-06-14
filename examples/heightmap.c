@@ -477,7 +477,7 @@ static void update_mesh(void)
  * GLFW callback functions
  *********************************************************************/
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     switch(key)
     {
@@ -585,7 +585,7 @@ int main(int argc, char** argv)
     }
 
     /* Register events callback */
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetKeyCallback(window, key_callback, NULL);
 
     glfwMakeContextCurrent(window);
     if (GL_TRUE != init_opengl())

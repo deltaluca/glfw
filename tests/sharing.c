@@ -39,12 +39,12 @@
 
 static GLFWwindow* windows[2];
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     if (action == GLFW_PRESS && key == GLFW_KEY_ESCAPE)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -64,7 +64,7 @@ static GLFWwindow* open_window(const char* title, GLFWwindow* share, int posX, i
     glfwSetWindowPos(window, posX, posY);
     glfwShowWindow(window);
 
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetKeyCallback(window, key_callback, NULL);
 
     return window;
 }
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
     int x, y, width;
     GLuint texture;
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);

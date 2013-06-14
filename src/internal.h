@@ -216,19 +216,19 @@ struct _GLFWwindow
 #endif
 
     struct {
-        GLFWwindowposfun        pos;
-        GLFWwindowsizefun       size;
-        GLFWwindowclosefun      close;
-        GLFWwindowrefreshfun    refresh;
-        GLFWwindowfocusfun      focus;
-        GLFWwindowiconifyfun    iconify;
-        GLFWframebuffersizefun  fbsize;
-        GLFWmousebuttonfun      mouseButton;
-        GLFWcursorposfun        cursorPos;
-        GLFWcursorenterfun      cursorEnter;
-        GLFWscrollfun           scroll;
-        GLFWkeyfun              key;
-        GLFWcharfun             character;
+        GLFWwindowposfun        pos;          void* pos_data;
+        GLFWwindowsizefun       size;         void* size_data;
+        GLFWwindowclosefun      close;        void* close_data;
+        GLFWwindowrefreshfun    refresh;      void* refresh_data;
+        GLFWwindowfocusfun      focus;        void* focus_data;
+        GLFWwindowiconifyfun    iconify;      void* iconify_data;
+        GLFWframebuffersizefun  fbsize;       void* fbsize_data;
+        GLFWmousebuttonfun      mouseButton;  void* mouseButton_data;
+        GLFWcursorposfun        cursorPos;    void* cursorPos_data;
+        GLFWcursorenterfun      cursorEnter;  void* cursorEnter_data;
+        GLFWscrollfun           scroll;       void* scroll_data;
+        GLFWkeyfun              key;          void* key_data;
+        GLFWcharfun             character;    void* character_data;
     } callbacks;
 
     // This is defined in the window API's platform.h
@@ -299,6 +299,7 @@ struct _GLFWlibrary
     _GLFWmonitor**  monitors;
     int             monitorCount;
     GLFWmonitorfun  monitorCallback;
+    void*           monitorCallback_data;
 
     // This is defined in the window API's platform.h
     _GLFW_PLATFORM_LIBRARY_WINDOW_STATE;

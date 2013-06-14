@@ -47,7 +47,7 @@ typedef struct
 
 static volatile GLboolean running = GL_TRUE;
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
@@ -85,7 +85,7 @@ int main(void)
     };
     const int count = sizeof(threads) / sizeof(Thread);
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);

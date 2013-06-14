@@ -71,7 +71,7 @@ static AttribGLFW glfw_attribs[] =
     { 0, NULL }
 };
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
@@ -81,7 +81,7 @@ int main(void)
     int i, width, height;
     GLFWwindow* window;
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);

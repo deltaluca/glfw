@@ -144,7 +144,7 @@ void _glfwInputKey(_GLFWwindow* window, int key, int scancode, int action, int m
         action = GLFW_REPEAT;
 
     if (window->callbacks.key)
-        window->callbacks.key((GLFWwindow*) window, key, scancode, action, mods);
+        window->callbacks.key((GLFWwindow*) window, key, scancode, action, mods, window->callbacks.key_data);
 }
 
 void _glfwInputChar(_GLFWwindow* window, unsigned int character)
@@ -156,13 +156,13 @@ void _glfwInputChar(_GLFWwindow* window, unsigned int character)
         return;
 
     if (window->callbacks.character)
-        window->callbacks.character((GLFWwindow*) window, character);
+        window->callbacks.character((GLFWwindow*) window, character, window->callbacks.character_data);
 }
 
 void _glfwInputScroll(_GLFWwindow* window, double xoffset, double yoffset)
 {
     if (window->callbacks.scroll)
-        window->callbacks.scroll((GLFWwindow*) window, xoffset, yoffset);
+        window->callbacks.scroll((GLFWwindow*) window, xoffset, yoffset, window->callbacks.scroll_data);
 }
 
 void _glfwInputMouseClick(_GLFWwindow* window, int button, int action, int mods)
@@ -177,7 +177,7 @@ void _glfwInputMouseClick(_GLFWwindow* window, int button, int action, int mods)
         window->mouseButton[button] = (char) action;
 
     if (window->callbacks.mouseButton)
-        window->callbacks.mouseButton((GLFWwindow*) window, button, action, mods);
+        window->callbacks.mouseButton((GLFWwindow*) window, button, action, mods, window->callbacks.mouseButton_data);
 }
 
 void _glfwInputCursorMotion(_GLFWwindow* window, double x, double y)
@@ -203,14 +203,15 @@ void _glfwInputCursorMotion(_GLFWwindow* window, double x, double y)
     {
         window->callbacks.cursorPos((GLFWwindow*) window,
                                     window->cursorPosX,
-                                    window->cursorPosY);
+                                    window->cursorPosY,
+                                    window->callbacks.cursorPos_data);
     }
 }
 
 void _glfwInputCursorEnter(_GLFWwindow* window, int entered)
 {
     if (window->callbacks.cursorEnter)
-        window->callbacks.cursorEnter((GLFWwindow*) window, entered);
+        window->callbacks.cursorEnter((GLFWwindow*) window, entered, window->callbacks.cursorEnter_data);
 }
 
 
@@ -344,7 +345,7 @@ GLFWAPI void glfwSetCursorPos(GLFWwindow* handle, double xpos, double ypos)
     _glfwPlatformSetCursorPos(window, xpos, ypos);
 }
 
-GLFWAPI GLFWkeyfun glfwSetKeyCallback(GLFWwindow* handle, GLFWkeyfun cbfun)
+GLFWAPI GLFWkeyfun glfwSetKeyCallback(GLFWwindow* handle, GLFWkeyfun cbfun, void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWkeyfun previous;
@@ -353,10 +354,11 @@ GLFWAPI GLFWkeyfun glfwSetKeyCallback(GLFWwindow* handle, GLFWkeyfun cbfun)
 
     previous = window->callbacks.key;
     window->callbacks.key = cbfun;
+    window->callbacks.key_data = data;
     return previous;
 }
 
-GLFWAPI GLFWcharfun glfwSetCharCallback(GLFWwindow* handle, GLFWcharfun cbfun)
+GLFWAPI GLFWcharfun glfwSetCharCallback(GLFWwindow* handle, GLFWcharfun cbfun, void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWcharfun previous;
@@ -365,11 +367,13 @@ GLFWAPI GLFWcharfun glfwSetCharCallback(GLFWwindow* handle, GLFWcharfun cbfun)
 
     previous = window->callbacks.character;
     window->callbacks.character = cbfun;
+    window->callbacks.character_data = data;
     return previous;
 }
 
 GLFWAPI GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWwindow* handle,
-                                                      GLFWmousebuttonfun cbfun)
+                                                      GLFWmousebuttonfun cbfun,
+                                                      void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWmousebuttonfun previous;
@@ -378,11 +382,13 @@ GLFWAPI GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWwindow* handle,
 
     previous = window->callbacks.mouseButton;
     window->callbacks.mouseButton = cbfun;
+    window->callbacks.mouseButton_data = data;
     return previous;
 }
 
 GLFWAPI GLFWcursorposfun glfwSetCursorPosCallback(GLFWwindow* handle,
-                                                  GLFWcursorposfun cbfun)
+                                                  GLFWcursorposfun cbfun,
+                                                  void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWcursorposfun previous;
@@ -391,11 +397,13 @@ GLFWAPI GLFWcursorposfun glfwSetCursorPosCallback(GLFWwindow* handle,
 
     previous = window->callbacks.cursorPos;
     window->callbacks.cursorPos = cbfun;
+    window->callbacks.cursorPos_data = data;
     return previous;
 }
 
 GLFWAPI GLFWcursorenterfun glfwSetCursorEnterCallback(GLFWwindow* handle,
-                                                      GLFWcursorenterfun cbfun)
+                                                      GLFWcursorenterfun cbfun,
+                                                      void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWcursorenterfun previous;
@@ -404,11 +412,13 @@ GLFWAPI GLFWcursorenterfun glfwSetCursorEnterCallback(GLFWwindow* handle,
 
     previous = window->callbacks.cursorEnter;
     window->callbacks.cursorEnter = cbfun;
+    window->callbacks.cursorEnter_data = data;
     return previous;
 }
 
 GLFWAPI GLFWscrollfun glfwSetScrollCallback(GLFWwindow* handle,
-                                            GLFWscrollfun cbfun)
+                                            GLFWscrollfun cbfun,
+                                            void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     GLFWscrollfun previous;
@@ -417,6 +427,7 @@ GLFWAPI GLFWscrollfun glfwSetScrollCallback(GLFWwindow* handle,
 
     previous = window->callbacks.scroll;
     window->callbacks.scroll = cbfun;
+    window->callbacks.scroll_data = data;
     return previous;
 }
 

@@ -51,12 +51,12 @@ static void set_swap_interval(GLFWwindow* window, int interval)
     glfwSetWindowTitle(window, title);
 }
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height, void* data)
 {
     window_width = width;
     window_height = height;
@@ -68,13 +68,13 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     gluOrtho2D(0.f, window_width, 0.f, window_height);
 }
 
-static void cursor_position_callback(GLFWwindow* window, double x, double y)
+static void cursor_position_callback(GLFWwindow* window, double x, double y, void* data)
 {
     cursor_x = x;
     cursor_y = y;
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
         set_swap_interval(window, 1 - swap_interval);
@@ -85,7 +85,7 @@ int main(void)
     GLFWwindow* window;
     int width, height;
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -97,14 +97,14 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    glfwSetCursorPosCallback(window, cursor_position_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetCursorPosCallback(window, cursor_position_callback, NULL);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback, NULL);
+    glfwSetKeyCallback(window, key_callback, NULL);
 
     glfwMakeContextCurrent(window);
 
     glfwGetFramebufferSize(window, &width, &height);
-    framebuffer_size_callback(window, width, height);
+    framebuffer_size_callback(window, width, height, NULL);
 
     set_swap_interval(window, swap_interval);
 

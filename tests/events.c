@@ -239,12 +239,12 @@ static const char* get_character_string(int character)
     return result;
 }
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void window_pos_callback(GLFWwindow* window, int x, int y)
+static void window_pos_callback(GLFWwindow* window, int x, int y, void* data)
 {
     printf("%08x at %0.3f: Window position: %i %i\n",
            counter++,
@@ -253,7 +253,7 @@ static void window_pos_callback(GLFWwindow* window, int x, int y)
            y);
 }
 
-static void window_size_callback(GLFWwindow* window, int width, int height)
+static void window_size_callback(GLFWwindow* window, int width, int height, void* data)
 {
     printf("%08x at %0.3f: Window size: %i %i\n",
            counter++,
@@ -262,7 +262,7 @@ static void window_size_callback(GLFWwindow* window, int width, int height)
            height);
 }
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height, void* data)
 {
     printf("%08x at %0.3f: Framebuffer size: %i %i\n",
            counter++,
@@ -273,14 +273,14 @@ static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-static void window_close_callback(GLFWwindow* window)
+static void window_close_callback(GLFWwindow* window, void* data)
 {
     printf("%08x at %0.3f: Window close\n", counter++, glfwGetTime());
 
     glfwSetWindowShouldClose(window, closeable);
 }
 
-static void window_refresh_callback(GLFWwindow* window)
+static void window_refresh_callback(GLFWwindow* window, void* data)
 {
     printf("%08x at %0.3f: Window refresh\n", counter++, glfwGetTime());
 
@@ -291,7 +291,7 @@ static void window_refresh_callback(GLFWwindow* window)
     }
 }
 
-static void window_focus_callback(GLFWwindow* window, int focused)
+static void window_focus_callback(GLFWwindow* window, int focused, void* data)
 {
     printf("%08x at %0.3f: Window %s\n",
            counter++,
@@ -299,7 +299,7 @@ static void window_focus_callback(GLFWwindow* window, int focused)
            focused ? "focused" : "defocused");
 }
 
-static void window_iconify_callback(GLFWwindow* window, int iconified)
+static void window_iconify_callback(GLFWwindow* window, int iconified, void* data)
 {
     printf("%08x at %0.3f: Window was %s\n",
            counter++,
@@ -307,7 +307,7 @@ static void window_iconify_callback(GLFWwindow* window, int iconified)
            iconified ? "iconified" : "restored");
 }
 
-static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods, void* data)
 {
     const char* name = get_button_name(button);
 
@@ -322,12 +322,12 @@ static void mouse_button_callback(GLFWwindow* window, int button, int action, in
     printf(" was %s\n", get_action_name(action));
 }
 
-static void cursor_position_callback(GLFWwindow* window, double x, double y)
+static void cursor_position_callback(GLFWwindow* window, double x, double y, void* data)
 {
     printf("%08x at %0.3f: Cursor position: %f %f\n", counter++, glfwGetTime(), x, y);
 }
 
-static void cursor_enter_callback(GLFWwindow* window, int entered)
+static void cursor_enter_callback(GLFWwindow* window, int entered, void* data)
 {
     printf("%08x at %0.3f: Cursor %s window\n",
            counter++,
@@ -335,12 +335,12 @@ static void cursor_enter_callback(GLFWwindow* window, int entered)
            entered ? "entered" : "left");
 }
 
-static void scroll_callback(GLFWwindow* window, double x, double y)
+static void scroll_callback(GLFWwindow* window, double x, double y, void* data)
 {
     printf("%08x at %0.3f: Scroll: %0.3f %0.3f\n", counter++, glfwGetTime(), x, y);
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     const char* name = get_key_name(key);
 
@@ -370,7 +370,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     }
 }
 
-static void char_callback(GLFWwindow* window, unsigned int character)
+static void char_callback(GLFWwindow* window, unsigned int character, void* data)
 {
     printf("%08x at %0.3f: Character 0x%08x (%s) input\n",
            counter++,
@@ -379,7 +379,7 @@ static void char_callback(GLFWwindow* window, unsigned int character)
            get_character_string(character));
 }
 
-void monitor_callback(GLFWmonitor* monitor, int event)
+void monitor_callback(GLFWmonitor* monitor, int event, void* data)
 {
     if (event == GLFW_CONNECTED)
     {
@@ -413,7 +413,7 @@ int main(void)
 
     setlocale(LC_ALL, "");
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -429,21 +429,21 @@ int main(void)
 
     printf("Window opened\n");
 
-    glfwSetMonitorCallback(monitor_callback);
+    glfwSetMonitorCallback(monitor_callback, NULL);
 
-    glfwSetWindowPosCallback(window, window_pos_callback);
-    glfwSetWindowSizeCallback(window, window_size_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetWindowCloseCallback(window, window_close_callback);
-    glfwSetWindowRefreshCallback(window, window_refresh_callback);
-    glfwSetWindowFocusCallback(window, window_focus_callback);
-    glfwSetWindowIconifyCallback(window, window_iconify_callback);
-    glfwSetMouseButtonCallback(window, mouse_button_callback);
-    glfwSetCursorPosCallback(window, cursor_position_callback);
-    glfwSetCursorEnterCallback(window, cursor_enter_callback);
-    glfwSetScrollCallback(window, scroll_callback);
-    glfwSetKeyCallback(window, key_callback);
-    glfwSetCharCallback(window, char_callback);
+    glfwSetWindowPosCallback(window, window_pos_callback, NULL);
+    glfwSetWindowSizeCallback(window, window_size_callback, NULL);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback, NULL);
+    glfwSetWindowCloseCallback(window, window_close_callback, NULL);
+    glfwSetWindowRefreshCallback(window, window_refresh_callback, NULL);
+    glfwSetWindowFocusCallback(window, window_focus_callback, NULL);
+    glfwSetWindowIconifyCallback(window, window_iconify_callback, NULL);
+    glfwSetMouseButtonCallback(window, mouse_button_callback, NULL);
+    glfwSetCursorPosCallback(window, cursor_position_callback, NULL);
+    glfwSetCursorEnterCallback(window, cursor_enter_callback, NULL);
+    glfwSetScrollCallback(window, scroll_callback, NULL);
+    glfwSetKeyCallback(window, key_callback, NULL);
+    glfwSetCharCallback(window, char_callback, NULL);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);

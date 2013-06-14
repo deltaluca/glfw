@@ -260,7 +260,7 @@ void calc_grid(void)
 // Print errors
 //========================================================================
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
@@ -270,7 +270,7 @@ static void error_callback(int error, const char* description)
 // Handle key strokes
 //========================================================================
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     if (action != GLFW_PRESS)
         return;
@@ -313,7 +313,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 // Callback function for mouse button events
 //========================================================================
 
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods, void* data)
 {
     if (button != GLFW_MOUSE_BUTTON_LEFT)
         return;
@@ -335,7 +335,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 // Callback function for cursor motion events
 //========================================================================
 
-void cursor_position_callback(GLFWwindow* window, double x, double y)
+void cursor_position_callback(GLFWwindow* window, double x, double y, void* data)
 {
     if (locked)
     {
@@ -352,7 +352,7 @@ void cursor_position_callback(GLFWwindow* window, double x, double y)
 // Callback function for scroll events
 //========================================================================
 
-void scroll_callback(GLFWwindow* window, double x, double y)
+void scroll_callback(GLFWwindow* window, double x, double y, void* data)
 {
     zoom += (float) y / 4.f;
     if (zoom < 0)
@@ -364,7 +364,7 @@ void scroll_callback(GLFWwindow* window, double x, double y)
 // Callback function for framebuffer resize events
 //========================================================================
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow* window, int width, int height, void* data)
 {
     float ratio = 1.f;
 
@@ -391,7 +391,7 @@ int main(int argc, char* argv[])
     double t, dt_total, t_old;
     int width, height;
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -403,17 +403,17 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    glfwSetKeyCallback(window, key_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetMouseButtonCallback(window, mouse_button_callback);
-    glfwSetCursorPosCallback(window, cursor_position_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetKeyCallback(window, key_callback, NULL);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback, NULL);
+    glfwSetMouseButtonCallback(window, mouse_button_callback, NULL);
+    glfwSetCursorPosCallback(window, cursor_position_callback, NULL);
+    glfwSetScrollCallback(window, scroll_callback, NULL);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
     glfwGetFramebufferSize(window, &width, &height);
-    framebuffer_size_callback(window, width, height);
+    framebuffer_size_callback(window, width, height, NULL);
 
     // Initialize OpenGL
     init_opengl();

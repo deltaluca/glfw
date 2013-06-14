@@ -51,12 +51,12 @@ typedef struct Joystick
 static Joystick joysticks[GLFW_JOYSTICK_LAST - GLFW_JOYSTICK_1 + 1];
 static int joystick_count = 0;
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height, void* data)
 {
     glViewport(0, 0, width, height);
 }
@@ -196,7 +196,7 @@ int main(void)
 
     memset(joysticks, 0, sizeof(joysticks));
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -208,7 +208,7 @@ int main(void)
         exit(EXIT_FAILURE);
     }
 
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback, NULL);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);

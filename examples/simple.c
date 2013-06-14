@@ -29,12 +29,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static void error_callback(int error, const char* description)
+static void error_callback(int error, const char* description, void* data)
 {
     fputs(description, stderr);
 }
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods, void* data)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -44,7 +44,7 @@ int main(void)
 {
     GLFWwindow* window;
 
-    glfwSetErrorCallback(error_callback);
+    glfwSetErrorCallback(error_callback, NULL);
 
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -58,7 +58,7 @@ int main(void)
 
     glfwMakeContextCurrent(window);
 
-    glfwSetKeyCallback(window, key_callback);
+    glfwSetKeyCallback(window, key_callback, NULL);
 
     while (!glfwWindowShouldClose(window))
     {

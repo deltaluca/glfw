@@ -211,7 +211,7 @@ static void animate(void)
 
 
 /* change view angle, exit upon ESC */
-void key( GLFWwindow* window, int k, int s, int action, int mods )
+void key( GLFWwindow* window, int k, int s, int action, int mods, void* data )
 {
   if( action != GLFW_PRESS ) return;
 
@@ -244,7 +244,7 @@ void key( GLFWwindow* window, int k, int s, int action, int mods )
 
 
 /* new window size */
-void reshape( GLFWwindow* window, int width, int height )
+void reshape( GLFWwindow* window, int width, int height, void* data )
 {
   GLfloat h = (GLfloat) height / (GLfloat) width;
   GLfloat xmax, znear, zfar;
@@ -337,14 +337,14 @@ int main(int argc, char *argv[])
     }
 
     // Set callback functions
-    glfwSetFramebufferSizeCallback(window, reshape);
-    glfwSetKeyCallback(window, key);
+    glfwSetFramebufferSizeCallback(window, reshape, NULL);
+    glfwSetKeyCallback(window, key, NULL);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval( 1 );
 
     glfwGetFramebufferSize(window, &width, &height);
-    reshape(window, width, height);
+    reshape(window, width, height, NULL);
 
     // Parse command-line options
     init(argc, argv);
