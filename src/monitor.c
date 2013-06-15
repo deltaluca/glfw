@@ -326,12 +326,12 @@ GLFWAPI const char* glfwGetMonitorName(GLFWmonitor* handle)
     return monitor->name;
 }
 
-GLFWAPI GLFWmonitorfun glfwSetMonitorCallback(GLFWmonitorfun cbfun, void* data)
+GLFWAPI void* glfwSetMonitorCallback(GLFWmonitorfun cbfun, void* data)
 {
-    GLFWmonitorfun previous;
+    void* previous;
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = _glfw.monitorCallback;
+    previous = _glfw.monitorCallback_data;
     _glfw.monitorCallback = cbfun;
     _glfw.monitorCallback_data = data;
     return previous;

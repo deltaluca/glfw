@@ -345,87 +345,87 @@ GLFWAPI void glfwSetCursorPos(GLFWwindow* handle, double xpos, double ypos)
     _glfwPlatformSetCursorPos(window, xpos, ypos);
 }
 
-GLFWAPI GLFWkeyfun glfwSetKeyCallback(GLFWwindow* handle, GLFWkeyfun cbfun, void* data)
+GLFWAPI void* glfwSetKeyCallback(GLFWwindow* handle, GLFWkeyfun cbfun, void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWkeyfun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.key;
+    previous = window->callbacks.key_data;
     window->callbacks.key = cbfun;
     window->callbacks.key_data = data;
     return previous;
 }
 
-GLFWAPI GLFWcharfun glfwSetCharCallback(GLFWwindow* handle, GLFWcharfun cbfun, void* data)
+GLFWAPI void* glfwSetCharCallback(GLFWwindow* handle, GLFWcharfun cbfun, void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWcharfun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.character;
+    previous = window->callbacks.character_data;
     window->callbacks.character = cbfun;
     window->callbacks.character_data = data;
     return previous;
 }
 
-GLFWAPI GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWwindow* handle,
-                                                      GLFWmousebuttonfun cbfun,
-                                                      void* data)
+GLFWAPI void* glfwSetMouseButtonCallback(GLFWwindow* handle,
+                                         GLFWmousebuttonfun cbfun,
+                                         void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWmousebuttonfun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.mouseButton;
+    previous = window->callbacks.mouseButton_data;
     window->callbacks.mouseButton = cbfun;
     window->callbacks.mouseButton_data = data;
     return previous;
 }
 
-GLFWAPI GLFWcursorposfun glfwSetCursorPosCallback(GLFWwindow* handle,
-                                                  GLFWcursorposfun cbfun,
-                                                  void* data)
+GLFWAPI void* glfwSetCursorPosCallback(GLFWwindow* handle,
+                                       GLFWcursorposfun cbfun,
+                                       void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWcursorposfun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.cursorPos;
+    previous = window->callbacks.cursorPos_data;
     window->callbacks.cursorPos = cbfun;
     window->callbacks.cursorPos_data = data;
     return previous;
 }
 
-GLFWAPI GLFWcursorenterfun glfwSetCursorEnterCallback(GLFWwindow* handle,
-                                                      GLFWcursorenterfun cbfun,
-                                                      void* data)
+GLFWAPI void* glfwSetCursorEnterCallback(GLFWwindow* handle,
+                                         GLFWcursorenterfun cbfun,
+                                         void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWcursorenterfun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.cursorEnter;
+    previous = window->callbacks.cursorEnter_data;
     window->callbacks.cursorEnter = cbfun;
     window->callbacks.cursorEnter_data = data;
     return previous;
 }
 
-GLFWAPI GLFWscrollfun glfwSetScrollCallback(GLFWwindow* handle,
-                                            GLFWscrollfun cbfun,
-                                            void* data)
+GLFWAPI void* glfwSetScrollCallback(GLFWwindow* handle,
+                                    GLFWscrollfun cbfun,
+                                    void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWscrollfun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.scroll;
+    previous = window->callbacks.scroll_data;
     window->callbacks.scroll = cbfun;
     window->callbacks.scroll_data = data;
     return previous;

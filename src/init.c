@@ -191,9 +191,9 @@ GLFWAPI const char* glfwGetVersionString(void)
     return _glfwPlatformGetVersionString();
 }
 
-GLFWAPI GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun cbfun, void* data)
+GLFWAPI void* glfwSetErrorCallback(GLFWerrorfun cbfun, void* data)
 {
-    GLFWerrorfun previous   = _glfwErrorCallback;
+    void* previous   = _glfwErrorCallback_data;
     _glfwErrorCallback      = cbfun;
     _glfwErrorCallback_data = data;
     return previous;

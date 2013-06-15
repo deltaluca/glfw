@@ -602,106 +602,106 @@ GLFWAPI void* glfwGetWindowUserPointer(GLFWwindow* handle)
     return window->userPointer;
 }
 
-GLFWAPI GLFWwindowposfun glfwSetWindowPosCallback(GLFWwindow* handle,
-                                                  GLFWwindowposfun cbfun,
-                                                  void* data)
+GLFWAPI void* glfwSetWindowPosCallback(GLFWwindow* handle,
+                                       GLFWwindowposfun cbfun,
+                                       void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWwindowposfun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.pos;
+    previous = window->callbacks.pos_data;
     window->callbacks.pos = cbfun;
     window->callbacks.pos_data = data;
     return previous;
 }
 
-GLFWAPI GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindow* handle,
-                                                    GLFWwindowsizefun cbfun,
-                                                    void* data)
+GLFWAPI void* glfwSetWindowSizeCallback(GLFWwindow* handle,
+                                        GLFWwindowsizefun cbfun,
+                                        void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWwindowsizefun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.size;
+    previous = window->callbacks.size_data;
     window->callbacks.size = cbfun;
     window->callbacks.size_data = data;
     return previous;
 }
 
-GLFWAPI GLFWwindowclosefun glfwSetWindowCloseCallback(GLFWwindow* handle,
-                                                      GLFWwindowclosefun cbfun,
-                                                      void* data)
+GLFWAPI void* glfwSetWindowCloseCallback(GLFWwindow* handle,
+                                         GLFWwindowclosefun cbfun,
+                                         void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWwindowclosefun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.close;
+    previous = window->callbacks.close_data;
     window->callbacks.close = cbfun;
     window->callbacks.close_data = data;
     return previous;
 }
 
-GLFWAPI GLFWwindowrefreshfun glfwSetWindowRefreshCallback(GLFWwindow* handle,
-                                                          GLFWwindowrefreshfun cbfun,
-                                                          void* data)
+GLFWAPI void* glfwSetWindowRefreshCallback(GLFWwindow* handle,
+                                           GLFWwindowrefreshfun cbfun,
+                                           void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWwindowrefreshfun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.refresh;
+    previous = window->callbacks.refresh_data;
     window->callbacks.refresh = cbfun;
     window->callbacks.refresh_data = data;
     return previous;
 }
 
-GLFWAPI GLFWwindowfocusfun glfwSetWindowFocusCallback(GLFWwindow* handle,
-                                                      GLFWwindowfocusfun cbfun,
-                                                      void* data)
+GLFWAPI void* glfwSetWindowFocusCallback(GLFWwindow* handle,
+                                         GLFWwindowfocusfun cbfun,
+                                         void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWwindowfocusfun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.focus;
+    previous = window->callbacks.focus_data;
     window->callbacks.focus = cbfun;
     window->callbacks.focus_data = data;
     return previous;
 }
 
-GLFWAPI GLFWwindowiconifyfun glfwSetWindowIconifyCallback(GLFWwindow* handle,
-                                                          GLFWwindowiconifyfun cbfun,
-                                                          void* data)
+GLFWAPI void* glfwSetWindowIconifyCallback(GLFWwindow* handle,
+                                           GLFWwindowiconifyfun cbfun,
+                                           void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWwindowiconifyfun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.iconify;
+    previous = window->callbacks.iconify_data;
     window->callbacks.iconify = cbfun;
     window->callbacks.iconify_data = data;
     return previous;
 }
 
-GLFWAPI GLFWframebuffersizefun glfwSetFramebufferSizeCallback(GLFWwindow* handle,
-                                                              GLFWframebuffersizefun cbfun,
-                                                              void* data)
+GLFWAPI void* glfwSetFramebufferSizeCallback(GLFWwindow* handle,
+                                             GLFWframebuffersizefun cbfun,
+                                             void* data)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    GLFWframebuffersizefun previous;
+    void* previous;
 
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    previous = window->callbacks.fbsize;
+    previous = window->callbacks.fbsize_data;
     window->callbacks.fbsize = cbfun;
     window->callbacks.fbsize_data = data;
     return previous;
